@@ -1,0 +1,120 @@
+/**
+ * Message catalog (i18n-ready foundation).
+ *
+ * Every user-visible shell string lives here — no hard-coded business
+ * strings in shell components (technical-frontend-architecture §8). The
+ * catalog is typed so a missing key fails the build/typecheck. A future
+ * next-intl/gettext pipeline can replace this module without changing
+ * component call sites.
+ */
+export const messages = {
+  en: {
+    app: {
+      name: "AUTORFP",
+      tagline: "RFP response platform",
+    },
+    common: {
+      save: "Save",
+      cancel: "Cancel",
+      close: "Close",
+      retry: "Retry",
+      search: "Search",
+      loading: "Loading…",
+      backToHome: "Back to home",
+      signIn: "Sign in",
+      signOut: "Sign out",
+      settings: "Settings",
+      comingSoon: "Coming soon",
+      requiredField: "This field is required",
+      somethingWentWrong: "Something went wrong",
+      tryAgainLater: "Please try again.",
+    },
+    nav: {
+      dashboard: "Dashboard",
+      projects: "Projects",
+      documents: "Documents",
+      knowledge: "Knowledge",
+      requirements: "Requirements",
+      capabilities: "Capabilities",
+      evidence: "Evidence",
+      compliance: "Compliance",
+      risk: "Risk",
+      proposals: "Proposals",
+      reviews: "Reviews",
+      notifications: "Notifications",
+      admin: "Admin",
+      workspace: "Workspace",
+      profile: "Profile",
+      userMenu: "User menu",
+      mainContent: "Main content",
+    },
+    auth: {
+      loginTitle: "Sign in to AUTORFP",
+      loginSubtitle: "Enter your credentials to continue",
+      email: "Email",
+      password: "Password",
+      register: "Create account",
+      acceptInvite: "Accept invitation",
+      sso: "Continue with SSO",
+      forgotPassword: "Forgot password?",
+      noAccount: "New here? Create an account",
+      registerSubtitle: "Join with your organization code",
+      inviteExpired: "This invitation has expired.",
+      inviteInvalid: "This invitation link is invalid.",
+    },
+    shell: {
+      sideNav: "Main navigation",
+      openMenu: "Open menu",
+      closeMenu: "Close menu",
+      commandPalette: "Search or jump to…",
+      offline: "You are offline. Showing cached data.",
+      degraded: "Some services are experiencing issues (degraded mode).",
+    },
+    lees: {
+      noResults: "Nothing here yet",
+      noResultsHint: "Create or upload content to get started.",
+      permissionDenied: "Permission denied",
+      permissionDeniedHint:
+        "You don't have access to this area. Contact your organization administrator if you believe this is a mistake.",
+    },
+    placeholder: {
+      title: "Foundation placeholder",
+      description:
+        "This route is wired into the shell and gated by capability, but the product feature has not been built yet.",
+    },
+    pages: {
+      dashboard: { title: "Dashboard", description: "Overview of your organization's RFP activity." },
+      projects: { title: "Projects", description: "Create and manage RFP response projects." },
+      documents: { title: "Documents", description: "Manage source documents across projects." },
+      knowledge: { title: "Knowledge", description: "Search and curate the organizational knowledge base." },
+      requirements: { title: "Requirements", description: "Map and analyze RFP requirements." },
+      capabilities: { title: "Capabilities", description: "Model the capabilities used to answer requirements." },
+      evidence: { title: "Evidence", description: "Attach and review supporting evidence." },
+      compliance: { title: "Compliance", description: "Track compliance posture and mappings." },
+      risk: { title: "Risk", description: "Identify and manage RFP-level risks." },
+      proposals: { title: "Proposals", description: "Generate and assemble response proposals." },
+      reviews: { title: "Reviews", description: "Review responses before submission." },
+      notifications: { title: "Notifications", description: "Activity and alerts for your workspace." },
+      admin: { title: "Admin", description: "Organizational settings, roles, and audit trail." },
+      settings: { title: "Settings", description: "Personal account and workspace preferences." },
+    },
+  },
+} as const;
+
+export type MessageLocale = keyof typeof messages;
+export type MessageKey =
+  | `app.${string}`
+  | `common.${string}`
+  | `nav.${string}`
+  | `auth.${string}`
+  | `shell.${string}`
+  | `lees.${string}`
+  | `placeholder.${string}`
+  | `pages.${string}`;
+
+export function isMessageKey(key: unknown): key is MessageKey {
+  if (typeof key !== "string") return false;
+  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages"] as const;
+  const [head] = key.split(".") as [string | undefined];
+  return namespaces.includes(head as (typeof namespaces)[number]);
+}
