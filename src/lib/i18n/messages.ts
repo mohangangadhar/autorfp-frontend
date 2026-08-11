@@ -96,7 +96,70 @@ export const messages = {
       reviews: { title: "Reviews", description: "Review responses before submission." },
       notifications: { title: "Notifications", description: "Activity and alerts for your workspace." },
       admin: { title: "Admin", description: "Organizational settings, roles, and audit trail." },
+      organizations: { title: "Organizations", description: "Provision and manage tenant organizations." },
       settings: { title: "Settings", description: "Personal account and workspace preferences." },
+    },
+    org: {
+      title: "Create your organization",
+      subtitle: "Provision an isolated workspace for your company.",
+      stepOrganization: "Organization",
+      stepAdmin: "Admin user",
+      stepConfiguration: "Configuration",
+      stepReview: "Review",
+      name: "Organization name",
+      nameHint: "For example, Acme Corporation.",
+      domain: "Domain",
+      domainHint: "Optional. Verified company domain, e.g. acme.com.",
+      slug: "Slug",
+      slugHint: "Used in URLs. Generated from the name — edit if needed.",
+      region: "Data region",
+      regionUsEast: "US East (us-east)",
+      regionUsWest: "US West (us-west)",
+      regionEuCentral: "EU Central (eu-central)",
+      dataRetention: "Data retention (days)",
+      branding: "Branding",
+      primaryColor: "Primary color",
+      secondaryColor: "Secondary color",
+      analysisThresholds: "Analysis thresholds",
+      coverageThreshold: "Coverage threshold (%)",
+      confidenceThreshold: "Confidence threshold (%)",
+      workflowConfig: "Workflow configuration",
+      requireApproval: "Require approval before final response",
+      adminName: "Admin name",
+      adminEmail: "Admin email",
+      adminPassword: "Admin password",
+      adminPasswordHint: "At least 8 characters.",
+      reviewHint: "Review the details below, then create your organization.",
+      createOrganization: "Create organization",
+      newOrganization: "New organization",
+      back: "Back",
+      continue: "Continue",
+      duplicateName: "An organization with this name already exists.",
+      duplicateSlug: "This slug is already in use.",
+      confirmTitle: "Create this organization?",
+      confirmDescription:
+        "The organization and its default admin user will be provisioned. An activation email will be sent to the admin.",
+      confirmLabel: "Yes, create organization",
+      listTitle: "Organizations",
+      listDescription: "Tenant organizations and their lifecycle status.",
+      emptyTitle: "No organizations yet",
+      emptyHint: "Create your first organization to provision a tenant workspace.",
+      createdTitle: "Organization created",
+      createdHint: "An activation email is on its way to {email}. Once activated you can sign in to your workspace.",
+      signIn: "Go to sign in",
+      status: { provisioning: "Provisioning", active: "Active", suspended: "Suspended", archived: "Archived" },
+      adminUserTitle: "Default admin user",
+      adminUserHint: "This person receives the activation email and becomes the organization administrator.",
+      actions: "Actions",
+      suspendAction: "Suspend",
+      reactivateAction: "Reactivate",
+      suspendConfirmTitle: "Suspend {name}?",
+      suspendConfirmDescription:
+        "Access will be revoked and all workflows paused while the organization is suspended. You can reactivate it at any time.",
+      suspendConfirmLabel: "Yes, suspend organization",
+      reactivateConfirmTitle: "Reactivate {name}?",
+      reactivateConfirmDescription: "Access and workflows will be restored immediately.",
+      reactivateConfirmLabel: "Yes, reactivate organization",
     },
   },
 } as const;
@@ -110,11 +173,12 @@ export type MessageKey =
   | `shell.${string}`
   | `lees.${string}`
   | `placeholder.${string}`
-  | `pages.${string}`;
+  | `pages.${string}`
+  | `org.${string}`;
 
 export function isMessageKey(key: unknown): key is MessageKey {
   if (typeof key !== "string") return false;
-  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages"] as const;
+  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org"] as const;
   const [head] = key.split(".") as [string | undefined];
   return namespaces.includes(head as (typeof namespaces)[number]);
 }

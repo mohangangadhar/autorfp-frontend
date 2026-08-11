@@ -1,19 +1,72 @@
-<!-- BEGIN:nextjs-agent-rules -->
+This document is the permanent operating instructions for AI coding agents.
 
-# This is NOT the Next.js you know
+The frontend is greenfield but must implement the approved AUTO RFP architecture and designs.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+The agent must always read:
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+Product Requirements
 
-<!-- END:nextjs-agent-rules -->
+Architecture
 
-## Project rules
+Engineering Story
 
-- Next.js **16**: middleware is now the **proxy** (`src/proxy.ts`) — do not add `middleware.ts`.
-- Strict TypeScript: no `any` (use `unknown`+narrowing), `noUncheckedIndexedAccess` (index access is `T | undefined`).
-- The **API enforces session/permission** — frontend gating is UI-only. Never trust client checks for security.
-- Route handlers / server code: import from `@/config/env-server` and `@/lib/api/server`; never read tokens/backend URL in client code.
-- Dependency directions: `ui/` primitives ← shell/components ← pages. `lib/` is framework-free where possible.
-- All user-visible strings use `t()` from `@/lib/i18n` (never hard-coded in components).
-- Validate before finishing: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`.
+Frontend Architecture
+
+Frontend UX Design
+
+Frontend UI Design
+
+Frontend Technical Design
+
+Backend API Contract
+
+GitHub Issue
+
+Before implementing an issue.
+
+Rules:
+
+1. Implement one GitHub Issue at a time.
+
+2. Never invent backend APIs.
+
+3. Never duplicate backend business logic.
+
+4. Follow the approved frontend architecture.
+
+5. Follow the approved design system.
+
+6. Reuse shared components.
+
+7. Keep feature-specific logic inside feature modules.
+
+8. Separate server state from UI state.
+
+9. Handle loading, empty, error and success states.
+
+10. Follow accessibility requirements.
+
+11. Write tests.
+
+12. Run linting.
+
+13. Run type checking.
+
+14. Run tests.
+
+15. Do not modify unrelated functionality.
+
+16. Do not change architecture without documenting the reason.
+
+17. Do not mark an issue complete unless its acceptance criteria are satisfied.
+
+Include the standard implementation workflow:
+
+GitHub Issue
+→ Context
+→ Design
+→ Implementation Plan
+→ Code
+→ Tests
+→ Validation
+→ PR
