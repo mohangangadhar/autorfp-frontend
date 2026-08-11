@@ -4,5 +4,5 @@ import { OrganizationCreateWizard } from "@/components/organizations/organizatio
 export const metadata: Metadata = { title: "New organization" };
 
 export default function NewOrganizationPage() {
-  return <OrganizationCreateWizard mode="admin" />;
+  return <OrganizationCreateWizard />;
 }

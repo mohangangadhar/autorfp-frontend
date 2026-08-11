@@ -85,9 +85,6 @@ function OrganizationsTable({ organizations }: { organizations: OrganizationDto[
                   {t("org.slug")}
                 </th>
                 <th scope="col" className="px-5 py-3 font-medium">
-                  {t("org.domain")}
-                </th>
-                <th scope="col" className="px-5 py-3 font-medium">
                   Status
                 </th>
                 <th scope="col" className="px-5 py-3 text-right font-medium">
@@ -103,7 +100,6 @@ function OrganizationsTable({ organizations }: { organizations: OrganizationDto[
                 <tr key={org.id} className="border-b border-border last:border-0">
                   <td className="px-5 py-3 font-medium text-primary">{org.name}</td>
                   <td className="px-5 py-3 text-muted">/{org.slug}</td>
-                  <td className="px-5 py-3 text-muted">{org.domain ?? "—"}</td>
                   <td className="px-5 py-3">
                     <StatusChip status={org.status} />
                   </td>

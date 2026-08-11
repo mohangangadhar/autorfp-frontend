@@ -64,61 +64,23 @@ export interface JobStatus {
 /** Organization lifecycle state (TDD-020 §state machine). */
 export type OrganizationStatus = "provisioning" | "active" | "suspended" | "archived";
 
-/** Statuses reachable via admin action (state machine: active ↔ suspended). */
-export type OrganizationStatusChange = "suspended" | "active";
+/** Tenant `settings` JSONB (backend `OrganizationCreate.settings`: `dict[str, Any]`). */
+export type OrganizationSettings = Record<string, unknown>;
 
-/** Tenant `config` JSONB (TDD-020 TBL-01): branding, analysis thresholds, workflow config. */
-export interface OrganizationConfig {
-  branding?: {
-    primary_color?: string;
-    secondary_color?: string;
-    logo_url?: string | null;
-  };
-  thresholds?: {
-    coverage_threshold?: number;
-    confidence_threshold?: number;
-  };
-  workflow?: {
-    require_approval?: boolean;
-  };
-  [key: string]: unknown;
-}
-
-/** `OrganizationDto` — org payload from `/organizations` (contract §7.1, TDD-020). */
+/** `OrganizationDto` — org payload from `/organizations` (backend `OrganizationResponse`). */
 export interface OrganizationDto {
   id: string;
   name: string;
   slug: string;
-  domain: string | null;
   status: OrganizationStatus;
-  region: string;
-  data_retention_days: number;
-  config: OrganizationConfig;
+  settings: OrganizationSettings;
   created_at: string;
-  updated_at: string;
-  created_by?: string;
+  updated_at: string | null;
 }
 
-/** Admin bootstrap user captured by the wizard; the backend provisions it and sends the activation email (AC). */
-export interface OrganizationAdminInput {
-  name: string;
-  email: string;
-  password: string;
-}
-
-/** `POST /organizations` request body mirror (TDD-020 sequence: name/slug/domain/config). */
+/** `POST /organizations` request body (backend `OrganizationCreate`: name/slug/settings). */
 export interface OrganizationCreateRequest {
   name: string;
   slug: string;
-  domain?: string | null;
-  region?: string;
-  data_retention_days?: number;
-  config?: OrganizationConfig;
-  admin?: OrganizationAdminInput;
-}
-
-/** `PATCH /organizations/{id}` status lifecycle request (TDD-020 sequence: status + reason). */
-export interface OrganizationStatusUpdateRequest {
-  status: OrganizationStatusChange;
-  reason?: string;
+  settings?: OrganizationSettings;
 }

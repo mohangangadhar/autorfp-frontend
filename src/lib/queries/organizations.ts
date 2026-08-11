@@ -8,14 +8,10 @@ import {
   type PageParams,
   type Paginated,
 } from "@/lib/api/pagination";
-import type {
-  OrganizationCreateRequest,
-  OrganizationDto,
-  OrganizationStatusUpdateRequest,
-} from "@/types/api";
+import type { OrganizationCreateRequest, OrganizationDto, OrganizationStatus } from "@/types/api";
 
 /**
- * Organization server state (contract §7.1 `/organizations`).
+ * Organization server state (backend `app/api/routers/organizations.py`).
  * Query + mutation hooks; wizard form state stays with the form
  * (state-management-design §2). Mutations invalidate the list key.
  */
@@ -34,14 +30,21 @@ export async function fetchOrganizations(params: PageParams = {}): Promise<Pagin
   return normalizePaginated<OrganizationDto>(result.data);
 }
 
-/** POST /organizations — `public` skips the Bearer header for the self-service wizard. */
-export async function createOrganization(
-  payload: OrganizationCreateRequest,
-  options: { public?: boolean } = {},
-): Promise<OrganizationDto> {
-  const result = await apiClient.post<OrganizationDto>("/api/v1/organizations", payload, {
-    public: options.public ?? false,
-  });
+/** POST /organizations — creates an org (requires `ORG_WRITE`; Bearer via session). */
+export async function createOrganization(payload: OrganizationCreateRequest): Promise<OrganizationDto> {
+  const result = await apiClient.post<OrganizationDto>("/api/v1/organizations", payload);
+  return result.data;
+}
+
+/** POST /organizations/{id}/suspend — lifecycle suspend (backend org_admin action). */
+export async function suspendOrganization(id: string): Promise<OrganizationDto> {
+  const result = await apiClient.post<OrganizationDto>(`/api/v1/organizations/${id}/suspend`);
+  return result.data;
+}
+
+/** POST /organizations/{id}/reactivate — lifecycle reactivate. */
+export async function reactivateOrganization(id: string): Promise<OrganizationDto> {
+  const result = await apiClient.post<OrganizationDto>(`/api/v1/organizations/${id}/reactivate`);
   return result.data;
 }
 
@@ -54,31 +57,22 @@ export function useOrganizations(params: PageParams = {}) {
 }
 
 /** Create an organization; invalidates `['organizations','list']` on success. */
-export function useCreateOrganization(options: { public?: boolean } = {}) {
+export function useCreateOrganization() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: OrganizationCreateRequest) => createOrganization(payload, options),
+    mutationFn: (payload: OrganizationCreateRequest) => createOrganization(payload),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: [ORGANIZATIONS_KEY] });
     },
   });
 }
 
-/** PATCH /organizations/{id} — lifecycle status change (TDD-020 state machine). */
-export async function updateOrganizationStatus(
-  id: string,
-  payload: OrganizationStatusUpdateRequest,
-): Promise<OrganizationDto> {
-  const result = await apiClient.patch<OrganizationDto>(`/api/v1/organizations/${id}`, payload);
-  return result.data;
-}
-
-/** Toggle an organization's lifecycle status; invalidates the list so chips update live. */
+/** Toggle an org's lifecycle status (suspend ↔ reactivate); invalidates the list so chips update live. */
 export function useToggleOrgStatus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: { id: string; status: OrganizationStatusUpdateRequest["status"] }) =>
-      updateOrganizationStatus(input.id, { status: input.status }),
+    mutationFn: (input: { id: string; status: Extract<OrganizationStatus, "suspended" | "active"> }) =>
+      input.status === "suspended" ? suspendOrganization(input.id) : reactivateOrganization(input.id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: [ORGANIZATIONS_KEY] });
     },

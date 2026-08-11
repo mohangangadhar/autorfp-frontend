@@ -6,7 +6,7 @@ export const metadata = { title: "Create your organization" };
 export default function RegisterPage() {
   return (
     <AuthProvider>
-      <OrganizationCreateWizard mode="self-service" />
+      <OrganizationCreateWizard />
     </AuthProvider>
   );
 }

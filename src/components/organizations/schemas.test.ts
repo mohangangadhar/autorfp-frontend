@@ -6,15 +6,11 @@ import { statusTone } from "./status-chip";
 const validValues: OrganizationFormValues = {
   name: "Acme Corporation",
   slug: "acme-corporation",
-  domain: "",
-  region: "us-east",
-  data_retention_days: 365,
-  config: {
+  settings: {
     branding: { primary_color: "#1d4ed8", secondary_color: "#0f172a" },
     thresholds: { coverage_threshold: 80, confidence_threshold: 70 },
     workflow: { require_approval: true },
   },
-  admin: { name: "Ada Lovelace", email: "ada@acme.com", password: "supersecret" },
 };
 
 describe("organizationSchema", () => {
@@ -35,35 +31,30 @@ describe("organizationSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects invalid domains and accepts empty", () => {
-    expect(organizationSchema.safeParse({ ...validValues, domain: "not a domain" }).success).toBe(false);
-    expect(organizationSchema.safeParse({ ...validValues, domain: "" }).success).toBe(true);
-    expect(organizationSchema.safeParse({ ...validValues, domain: "acme.com" }).success).toBe(true);
-  });
-
-  it("rejects a weak admin password", () => {
-    const result = organizationSchema.safeParse({ ...validValues, admin: { ...validValues.admin, password: "short" } });
+  it("rejects malformed hex colors", () => {
+    const result = organizationSchema.safeParse({
+      ...validValues,
+      settings: {
+        ...validValues.settings,
+        branding: { ...validValues.settings.branding, primary_color: "blue" },
+      },
+    });
     expect(result.success).toBe(false);
-  });
-
-  it("keeps retention within 30–3650 days", () => {
-    expect(organizationSchema.safeParse({ ...validValues, data_retention_days: 15 }).success).toBe(false);
-    expect(organizationSchema.safeParse({ ...validValues, data_retention_days: 3650 }).success).toBe(true);
   });
 });
 
 describe("toCreateRequest", () => {
-  it("maps validated values to the snake_case POST body and drops empty domain", () => {
+  it("maps validated values to the snake_case POST body under `settings`", () => {
     const request = toCreateRequest(validValues);
-    expect(request).toMatchObject({
+    expect(request).toEqual({
       name: "Acme Corporation",
       slug: "acme-corporation",
-      region: "us-east",
-      data_retention_days: 365,
-      config: { branding: { primary_color: "#1d4ed8" } },
-      admin: { email: "ada@acme.com" },
+      settings: {
+        branding: { primary_color: "#1d4ed8", secondary_color: "#0f172a" },
+        thresholds: { coverage_threshold: 80, confidence_threshold: 70 },
+        workflow: { require_approval: true },
+      },
     });
-    expect(request.domain).toBeUndefined();
   });
 });
 
