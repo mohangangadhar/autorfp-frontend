@@ -150,6 +150,28 @@ export const messages = {
       archiveRetentionNote:
         "All data is retained per compliance requirements. Nothing is deleted.",
     },
+    users: {
+      title: "Users",
+      description: "Invite team members and manage their access.",
+      inviteTitle: "Invite a team member",
+      inviteDescription: "Send an email invitation with role-scoped access.",
+      name: "Name",
+      email: "Email",
+      role: "Role",
+      rolePlaceholder: "Select a role",
+      role_viewer: "Viewer",
+      role_editor: "Editor",
+      role_org_admin: "Organization admin",
+      inviteSubmit: "Send invitation",
+      inviteSuccess: "Invitation sent to {email}.",
+      duplicateEmail: "A user with this email has already been invited.",
+      listTitle: "Team members",
+      status: "Status",
+      statusInvited: "Invited",
+      statusActive: "Active",
+      emptyTitle: "No team members yet",
+      emptyHint: "Invite your first team member to get started.",
+    },
   },
 } as const;
 
@@ -163,11 +185,12 @@ export type MessageKey =
   | `lees.${string}`
   | `placeholder.${string}`
   | `pages.${string}`
-  | `org.${string}`;
+  | `org.${string}`
+  | `users.${string}`;
 
 export function isMessageKey(key: unknown): key is MessageKey {
   if (typeof key !== "string") return false;
-  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org"] as const;
+  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org", "users"] as const;
   const [head] = key.split(".") as [string | undefined];
   return namespaces.includes(head as (typeof namespaces)[number]);
 }

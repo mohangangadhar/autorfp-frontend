@@ -84,3 +84,13 @@ export interface OrganizationCreateRequest {
   slug: string;
   settings?: OrganizationSettings;
 }
+
+/** Roles accepted by `POST /users/invite` (backend `InviteRequest.role` regex). */
+export type InviteRole = "viewer" | "editor" | "org_admin";
+
+/** `POST /users/invite` request body (backend `InviteRequest`). */
+export interface InviteUserRequest {
+  email: string;
+  name: string;
+  role: InviteRole;
+}
