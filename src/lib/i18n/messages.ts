@@ -142,6 +142,13 @@ export const messages = {
       reactivateConfirmTitle: "Reactivate {name}?",
       reactivateConfirmDescription: "Access and workflows will be restored immediately.",
       reactivateConfirmLabel: "Yes, reactivate organization",
+      archiveAction: "Archive",
+      archiveConfirmTitle: "Archive {name}?",
+      archiveConfirmDescription:
+        "The organization will be moved to archived state and removed from active use.",
+      archiveConfirmLabel: "Yes, archive organization",
+      archiveRetentionNote:
+        "All data is retained per compliance requirements. Nothing is deleted.",
     },
   },
 } as const;

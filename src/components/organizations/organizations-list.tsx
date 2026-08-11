@@ -13,6 +13,7 @@ import { PageSkeleton } from "@/components/shared/loaders";
 import { t } from "@/lib/i18n";
 import { StatusChip } from "./status-chip";
 import { OrgStatusToggle } from "./org-status-toggle";
+import { ArchiveDialog } from "./archive-dialog";
 import type { OrganizationDto } from "@/types/api";
 
 /**
@@ -105,7 +106,10 @@ function OrganizationsTable({ organizations }: { organizations: OrganizationDto[
                   </td>
                   <td className="px-5 py-3 text-right text-muted">{formatDate(org.created_at)}</td>
                   <td className="px-5 py-3 text-right">
-                    <OrgStatusToggle org={org} />
+                    <div className="flex justify-end gap-2">
+                      <OrgStatusToggle org={org} />
+                      <ArchiveDialog org={org} />
+                    </div>
                   </td>
                 </tr>
               ))}

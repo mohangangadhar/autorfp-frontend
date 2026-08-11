@@ -48,6 +48,12 @@ export async function reactivateOrganization(id: string): Promise<OrganizationDt
   return result.data;
 }
 
+/** DELETE /organizations/{id} — terminal archive; data retained per compliance (server-enforced). */
+export async function archiveOrganization(id: string): Promise<OrganizationDto> {
+  const result = await apiClient.delete<OrganizationDto>(`/api/v1/organizations/${id}`);
+  return result.data;
+}
+
 /** List organizations (admin). */
 export function useOrganizations(params: PageParams = {}) {
   return useQuery({
@@ -73,6 +79,17 @@ export function useToggleOrgStatus() {
   return useMutation({
     mutationFn: (input: { id: string; status: Extract<OrganizationStatus, "suspended" | "active"> }) =>
       input.status === "suspended" ? suspendOrganization(input.id) : reactivateOrganization(input.id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: [ORGANIZATIONS_KEY] });
+    },
+  });
+}
+
+/** Archive an organization (terminal); invalidates the list so the status chip updates live. */
+export function useArchiveOrg() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => archiveOrganization(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: [ORGANIZATIONS_KEY] });
     },

@@ -4,10 +4,12 @@ import type { OrganizationDto } from "@/types/api";
 
 const { useOrganizations } = vi.hoisted(() => ({ useOrganizations: vi.fn() }));
 const { useToggleOrgStatus } = vi.hoisted(() => ({ useToggleOrgStatus: vi.fn() }));
+const { useArchiveOrg } = vi.hoisted(() => ({ useArchiveOrg: vi.fn() }));
 
 vi.mock("@/lib/queries/organizations", () => ({
   useOrganizations,
   useToggleOrgStatus,
+  useArchiveOrg,
 }));
 
 vi.mock("@/lib/auth/auth-context", () => ({
@@ -35,6 +37,7 @@ describe("OrganizationsList LEES", () => {
   beforeEach(() => {
     useOrganizations.mockReset();
     useToggleOrgStatus.mockReset();
+    useArchiveOrg.mockReset();
   });
 
   it("shows a loading skeleton while fetching", () => {
@@ -58,19 +61,27 @@ describe("OrganizationsList LEES", () => {
 
   it("renders a table with status chips and status toggles for each organization", () => {
     useToggleOrgStatus.mockReturnValue({ isPending: false, mutateAsync: vi.fn() });
+    useArchiveOrg.mockReturnValue({ isPending: false, mutateAsync: vi.fn() });
     useOrganizations.mockReturnValue({
       isPending: false,
       isError: false,
       isSuccess: true,
-      data: { items: [org({ status: "provisioning" }), org({ id: "org_02", name: "Beta", slug: "beta", status: "suspended" })], total: 2 },
+      data: {
+        items: [
+          org({ status: "provisioning" }),
+          org({ id: "org_02", name: "Beta", slug: "beta", status: "suspended" }),
+          org({ id: "org_03", name: "Gamma", slug: "gamma", status: "archived" }),
+        ],
+        total: 3,
+      },
     });
     render(<OrganizationsList />);
     expect(screen.getByRole("table", { name: "Organizations" })).toBeInTheDocument();
-    expect(screen.getAllByTestId("status-chip")).toHaveLength(2);
+    expect(screen.getAllByTestId("status-chip")).toHaveLength(3);
     expect(screen.getByText("Acme")).toBeInTheDocument();
     expect(screen.getByText("Beta")).toBeInTheDocument();
-    expect(screen.getByText("provisioning")).toBeInTheDocument();
-    expect(screen.getByText("suspended")).toBeInTheDocument();
+    // provisioning + suspended render Archive; archived does not
+    expect(screen.getAllByRole("button", { name: "Archive" })).toHaveLength(2);
     // provisioning has no lifecycle action; suspended does (reactivate)
     expect(screen.getByRole("button", { name: "Reactivate" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Suspend" })).not.toBeInTheDocument();

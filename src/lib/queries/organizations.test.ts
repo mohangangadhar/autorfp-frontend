@@ -4,14 +4,17 @@ const apiClient = vi.hoisted(() => ({
   get: vi.fn(),
   post: vi.fn(),
   patch: vi.fn(),
+  delete: vi.fn(),
 }));
 
 vi.mock("@/lib/api/client", () => ({ apiClient }));
 
 import {
+  archiveOrganization,
   createOrganization,
   reactivateOrganization,
   suspendOrganization,
+  useArchiveOrg,
   useToggleOrgStatus,
 } from "./organizations";
 
@@ -32,6 +35,7 @@ describe("organization API functions", () => {
   beforeEach(() => {
     apiClient.post.mockReset();
     apiClient.patch.mockReset();
+    apiClient.delete.mockReset();
     queryClient.invalidateQueries.mockReset();
   });
 
@@ -67,6 +71,21 @@ describe("organization API functions", () => {
     await mutation.mutateAsync({ id: "org_1", status: "active" });
     expect(apiClient.post).toHaveBeenCalledWith("/api/v1/organizations/org_1/reactivate");
 
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ["organizations"] });
+  });
+
+  it("archives via DELETE /api/v1/organizations/{id}", async () => {
+    apiClient.delete.mockResolvedValue({ data: { id: "org_1" } });
+    await archiveOrganization("org_1");
+    expect(apiClient.delete).toHaveBeenCalledWith("/api/v1/organizations/org_1");
+  });
+
+  it("archive mutation invalidates the list", async () => {
+    apiClient.delete.mockResolvedValue({ data: { id: "org_1" } });
+
+    const mutation = useArchiveOrg();
+    await mutation.mutateAsync("org_1");
+    expect(apiClient.delete).toHaveBeenCalledWith("/api/v1/organizations/org_1");
     expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ["organizations"] });
   });
 });
