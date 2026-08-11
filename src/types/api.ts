@@ -94,3 +94,29 @@ export interface InviteUserRequest {
   name: string;
   role: InviteRole;
 }
+
+/** `RoleResponse` — role from `/roles` (backend `app/schemas/role.py`). */
+export interface RoleDto {
+  id: string;
+  organization_id: string;
+  name: string;
+  description: string | null;
+  is_predefined: boolean;
+  permission_bitmap: number;
+  created_at: string;
+  updated_at: string | null;
+}
+
+/** `POST /roles` request body (backend `RoleCreateRequest`). */
+export interface RoleCreateRequest {
+  name: string;
+  description?: string | null;
+  permission_bitmap: number;
+}
+
+/** `PUT /roles/{id}` request body (backend `RoleUpdateRequest`). */
+export interface RoleUpdateRequest {
+  name?: string;
+  description?: string | null;
+  permission_bitmap?: number;
+}

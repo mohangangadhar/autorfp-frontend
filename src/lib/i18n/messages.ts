@@ -184,6 +184,97 @@ export const messages = {
       emptyTitle: "No team members yet",
       emptyHint: "Invite your first team member to get started.",
     },
+    roles: {
+      title: "Roles",
+      description: "Manage roles and the granular permissions assigned to each.",
+      newRole: "New role",
+      createTitle: "Create role",
+      createDescription: "Define a new role and choose its permissions.",
+      editTitle: "Edit {name}",
+      editDescription: "Update the role's name, description, or permissions.",
+      name: "Role name",
+      descriptionLabel: "Description",
+      permissions: "Permissions",
+      save: "Save role",
+      create: "Create role",
+      duplicateName: "A role with this name already exists.",
+      listTitle: "Roles",
+      role: "role",
+      roles: "roles",
+      type: "Type",
+      predefined: "Predefined",
+      custom: "Custom",
+      actions: "Actions",
+      editAction: "Edit {name}",
+      editActionShort: "Edit",
+      deleteAction: "Delete {name}",
+      deleteActionShort: "Delete",
+      deleteTitle: "Delete {name}?",
+      deleteDescription:
+        "This role will be removed and unassigned from all users. Members affected will lose these permissions. This cannot be undone.",
+      deleteConfirmLabel: "Yes, delete role",
+      emptyTitle: "No roles yet",
+      emptyHint: "Create your first custom role to grant tailored access.",
+      group: {
+        documents: "Documents",
+        requirements: "Requirements",
+        analysis: "Analysis",
+        users: "Users",
+        roles: "Roles",
+        organization: "Organization",
+        billing: "Billing",
+        audit: "Audit",
+        projects: "Projects",
+        capabilities: "Capabilities",
+        qualification: "Qualification",
+      },
+      permission: {
+        document: {
+          read: "View documents",
+          write: "Edit documents",
+        },
+        requirement: {
+          read: "View requirements",
+          write: "Edit requirements",
+        },
+        analysis: {
+          read: "View analysis",
+          run: "Run analysis",
+        },
+        user: {
+          read: "View users",
+          write: "Manage users",
+        },
+        role: {
+          read: "View roles",
+          write: "Manage roles",
+        },
+        org: {
+          read: "View organization",
+          write: "Edit organization",
+          delete: "Delete organization",
+        },
+        billing: {
+          read: "View billing",
+          write: "Manage billing",
+        },
+        audit: {
+          read: "View audit log",
+        },
+        project: {
+          read: "View projects",
+          write: "Edit projects",
+        },
+        capability: {
+          read: "View capabilities",
+          write: "Edit capabilities",
+        },
+        qualification: {
+          read: "View qualification",
+          write: "Edit qualification",
+        },
+      },
+    },
   },
 } as const;
 
@@ -198,11 +289,12 @@ export type MessageKey =
   | `placeholder.${string}`
   | `pages.${string}`
   | `org.${string}`
-  | `users.${string}`;
+  | `users.${string}`
+  | `roles.${string}`;
 
 export function isMessageKey(key: unknown): key is MessageKey {
   if (typeof key !== "string") return false;
-  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org", "users"] as const;
+  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org", "users", "roles"] as const;
   const [head] = key.split(".") as [string | undefined];
   return namespaces.includes(head as (typeof namespaces)[number]);
 }
