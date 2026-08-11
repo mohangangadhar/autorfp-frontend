@@ -231,6 +231,19 @@
   --text-xl--line-height: 1.3;
   --text-2xl--line-height: 1.25;
   --text-3xl--line-height: 1.2;
+
+  --animate-drawer-in: drawer-in 0.2s ease-out;
+}
+
+/* Drawer slide-in (ui/11-drawers: drawers enter from the right edge). */
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 /* ------------------------------------------------------------------
