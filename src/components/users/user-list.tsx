@@ -10,6 +10,7 @@ import { ErrorState } from "@/components/shared/error-state";
 import { PageSkeleton } from "@/components/shared/loaders";
 import { t } from "@/lib/i18n";
 import { ROLE_LABELS } from "./roles";
+import { DeactivateDialog } from "./deactivate-dialog";
 import type { UserProfile } from "@/types/api";
 
 const USER_STATUS_TONES: Record<"invited" | "active", NonNullable<BadgeProps["tone"]>> = {
@@ -64,6 +65,9 @@ export function UserList() {
                 <th scope="col" className="px-5 py-3 font-medium">
                   {t("users.status")}
                 </th>
+                <th scope="col" className="px-5 py-3 font-medium">
+                  <span className="sr-only">{t("users.actions")}</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -76,6 +80,9 @@ export function UserList() {
                   </td>
                   <td className="px-5 py-3">
                     <UserStatusBadge user={user} />
+                  </td>
+                  <td className="px-5 py-3 text-right">
+                    <DeactivateDialog user={user} />
                   </td>
                 </tr>
               ))}

@@ -169,6 +169,18 @@ export const messages = {
       status: "Status",
       statusInvited: "Invited",
       statusActive: "Active",
+      actions: "Actions",
+      deactivateAction: "Deactivate",
+      deactivateConfirmTitle: "Deactivate {name}?",
+      deactivateConfirmDescription:
+        "They will no longer be able to sign in, but their contributions are preserved and remain visible. You can reactivate them at any time.",
+      deactivateConfirmLabel: "Yes, deactivate user",
+      reactivateAction: "Reactivate",
+      reactivateConfirmTitle: "Reactivate {name}?",
+      reactivateConfirmDescription: "Access and sign-in will be restored immediately.",
+      reactivateConfirmLabel: "Yes, reactivate user",
+      lastAdminError:
+        "This user is the last active organization admin and cannot be deactivated.",
       emptyTitle: "No team members yet",
       emptyHint: "Invite your first team member to get started.",
     },

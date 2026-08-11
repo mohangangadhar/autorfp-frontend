@@ -2,15 +2,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import type { UserProfile } from "@/types/api";
 
-const { useUsers } = vi.hoisted(() => ({ useUsers: vi.fn() }));
+const { useUsers, useToggleUserStatus } = vi.hoisted(() => ({
+  useUsers: vi.fn(),
+  useToggleUserStatus: vi.fn(),
+}));
 
 vi.mock("@/lib/queries/users", () => ({
   useUsers,
+  useToggleUserStatus,
 }));
 
 vi.mock("@/lib/auth/auth-context", () => ({
   useAuth: () => ({
     can: (permission: string) => permission === "admin.read" || permission === "admin.write",
+    user: { id: "u_self" },
   }),
 }));
 
@@ -34,6 +39,7 @@ function user(partial: Partial<UserProfile>): UserProfile {
 describe("UserList LEES", () => {
   beforeEach(() => {
     useUsers.mockReset();
+    useToggleUserStatus.mockReturnValue({ mutateAsync: vi.fn(), isPending: false });
   });
 
   it("shows a loading skeleton while fetching", () => {
@@ -79,5 +85,23 @@ describe("UserList LEES", () => {
     expect(screen.getAllByText("Active")).toHaveLength(2);
     expect(screen.getAllByText("Invited")).toHaveLength(1);
     expect(screen.getByText("alice@acme.com")).toBeInTheDocument();
+  });
+
+  it("renders a Deactivate action for active users and Reactivate for inactive users", () => {
+    useUsers.mockReturnValue({
+      isPending: false,
+      isError: false,
+      isSuccess: true,
+      data: {
+        items: [
+          user({}),
+          user({ id: "u_02", name: "Bob", email: "bob@acme.com", is_active: false }),
+        ],
+        total: 2,
+      },
+    });
+    render(<UserList />);
+    expect(screen.getAllByRole("button", { name: /Deactivate/ })).toHaveLength(1);
+    expect(screen.getAllByRole("button", { name: /Reactivate/ })).toHaveLength(1);
   });
 });

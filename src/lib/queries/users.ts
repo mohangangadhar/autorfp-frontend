@@ -33,6 +33,18 @@ export async function inviteUser(payload: InviteUserRequest): Promise<UserProfil
   return result.data;
 }
 
+/** DELETE /users/{id} — deactivate (soft-delete); contributions preserved, access revoked. */
+export async function deactivateUser(id: string): Promise<UserProfile> {
+  const result = await apiClient.delete<UserProfile>(`/api/v1/users/${id}`);
+  return result.data;
+}
+
+/** POST /users/{id}/reactivate — restore access for a deactivated user. */
+export async function reactivateUser(id: string): Promise<UserProfile> {
+  const result = await apiClient.post<UserProfile>(`/api/v1/users/${id}/reactivate`);
+  return result.data;
+}
+
 /** List users (admin). */
 export function useUsers(params: PageParams = {}) {
   return useQuery({
@@ -46,6 +58,18 @@ export function useInviteUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: InviteUserRequest) => inviteUser(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: [USERS_KEY] });
+    },
+  });
+}
+
+/** Deactivate ↔ reactivate a user; invalidates the list so the row status updates live. */
+export function useToggleUserStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; isActive: boolean }) =>
+      input.isActive ? deactivateUser(input.id) : reactivateUser(input.id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: [USERS_KEY] });
     },
