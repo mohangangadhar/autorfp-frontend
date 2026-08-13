@@ -392,6 +392,30 @@ export const messages = {
       statOrganizations: "Organizations",
       errorTitle: "Could not load the audit log",
     },
+    usage: {
+      title: "Usage analytics",
+      description:
+        "Platform activity across audit events. Usage-metering endpoints are pending, so this screen reflects the verified audit data.",
+      rangeLabel: "Time range",
+      range7d: "7 days",
+      range30d: "30 days",
+      range90d: "90 days",
+      statTotalEvents: "Audit events",
+      statOrganizations: "Organizations",
+      statTopAction: "Top action",
+      statTopEntityType: "Top entity type",
+      chartTitle: "Events over time",
+      chartSubtitle: "Audit events per day",
+      chartSummary: "{total} events across {days} days; peak {peak} on {date}.",
+      chartEmpty: "No events in this range",
+      chartTruncated: "Showing the first {cap} events; data may be partial.",
+      chartViewTable: "View as table",
+      chartHideTable: "Hide table",
+      chartColumnDay: "Day",
+      chartColumnCount: "Events",
+      eventCount: "{count} events",
+      errorTitle: "Could not load usage data",
+    },
   },
 } as const;
 
@@ -409,11 +433,12 @@ export type MessageKey =
   | `users.${string}`
   | `roles.${string}`
   | `idp.${string}`
-  | `audit.${string}`;
+  | `audit.${string}`
+  | `usage.${string}`;
 
 export function isMessageKey(key: unknown): key is MessageKey {
   if (typeof key !== "string") return false;
-  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org", "users", "roles", "idp", "audit"] as const;
+  const namespaces = ["app", "common", "nav", "auth", "shell", "lees", "placeholder", "pages", "org", "users", "roles", "idp", "audit", "usage"] as const;
   const [head] = key.split(".") as [string | undefined];
   return namespaces.includes(head as (typeof namespaces)[number]);
 }
