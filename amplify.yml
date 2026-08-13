@@ -19,12 +19,18 @@ frontend:
   # Environment variables — set these in the Amplify console (App settings →
   # Environment variables). Never commit secrets. Build/SSR works with the
   # localhost defaults, but the app will not reach the real backend until
-  # these point at the deployed backend.
+  # these are set.
   #
-  #   NEXT_PUBLIC_API_URL   public backend origin (BFF relays here in browser)
-  #   NEXT_PUBLIC_APP_URL   this app's canonical origin (the Amplify domain)
-  #   BACKEND_API_URL       backend origin used ONLY by server-side BFF handlers
-  #   SESSION_COOKIE_NAME   httpOnly refresh cookie name (default: __session)
+  # The browser talks ONLY same-origin HTTPS: NEXT_PUBLIC_API_URL must be
+  # this app's own origin (the Amplify domain), because next.config.ts
+  # rewrites /api/v1/* server-side to BACKEND_API_URL. Pointing
+  # NEXT_PUBLIC_API_URL at the plain-HTTP backend would be blocked as
+  # mixed content. See .env.production.example.
+  #
+  #   NEXT_PUBLIC_API_URL    this app's own origin, e.g. https://main.<id>.amplifyapp.com
+  #   NEXT_PUBLIC_APP_URL    same app origin
+  #   BACKEND_API_URL        backend origin relayed server-side, e.g. http://ec2-...:8000
+  #   SESSION_COOKIE_NAME    httpOnly refresh cookie name (default: __session)
   #   NEXT_PUBLIC_SENTRY_DSN, SENTRY_DSN   optional error reporting
   #   NEXT_PUBLIC_ENABLE_REGISTRATION      "true" | "false"
   #   NEXT_PUBLIC_ENABLE_SSO               "true" | "false"
